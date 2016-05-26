@@ -1,0 +1,23 @@
+{
+    "name": "sostart/phpkit",
+    "description": "stay hungry, stay foolish",
+    "homepage": "https://github.com/sostart/phpkit",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "liuming",
+            "email": "sostart.net@gmail.com",
+            "homepage": "http://www.sostart.net/"
+        }
+    ],
+    "require": {
+        "sostart/loader": "dev-master",
+        "sostart/config": "dev-master",
+        "sostart/router": "dev-master",
+    },
+    "autoload": {
+        "psr-4": {
+            "PHPKit\\": ""
+        }
+    }
+}

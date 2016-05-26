@@ -13,7 +13,7 @@
     "require": {
         "sostart/loader": "dev-master",
         "sostart/config": "dev-master",
-        "sostart/router": "dev-master",
+        "sostart/router": "dev-master"
     },
     "autoload": {
         "psr-4": {

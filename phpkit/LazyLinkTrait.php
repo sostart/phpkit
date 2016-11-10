@@ -23,4 +23,10 @@ trait LazyLinkTrait
         
         return is_null( $return = call_user_func_array([$instance, $name], $arguments) ) ? $instance: $return; 
     }
+
+    public function __invoke()
+    {
+        $instance = static::getInstance();
+        return $instance;
+    }
 }

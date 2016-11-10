@@ -78,23 +78,7 @@ if (! function_exists('dd') && ! function_exists('ddd')) {
     }
 }
 
-if (! function_exists('App')) {
-    /**
-     * App
-     *
-     * 不传值         获取App实例
-     * 传入单个数组   设置config
-     * 传入单个字符串 获取字符串对应的实例
-     *
-     * @return mixed
-     */
-    function App()
-    {
-        return call_user_func_array(App::get(strtolower(__FUNCTION__)), func_get_args());
-    }
-}
-
-if (! function_exists('PHPKit')) {
+if (! function_exists('PHPKit') && ! function_exists('App')) {
     /**
      * PHPKit
      *
@@ -106,6 +90,11 @@ if (! function_exists('PHPKit')) {
      */
     function PHPKit()
     {
-        return call_user_func_array(App::get(strtolower(__FUNCTION__)), func_get_args());
+        return call_user_func_array(PHPKit\PHPKit::get(strtolower(__FUNCTION__)), func_get_args());
+    }
+
+    function App()
+    {
+        return call_user_func_array('PHPKit', func_get_args());
     }
 }

@@ -36,7 +36,7 @@ class PHPKit
 
         foreach ((array)$tools as $tool=>$closure) {
             
-            if (is_numeric($tool)) {
+            if (is_numeric($tool) && is_string($closure)) {
                 
                 $tool = $closure;
 

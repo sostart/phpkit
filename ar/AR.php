@@ -33,10 +33,3 @@ class AR
         return $instance;    
     }
 }
-
-namespace PHPKit\AR;
-
-class ActiveRecord
-{
-	
-}

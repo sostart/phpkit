@@ -178,11 +178,13 @@ class DB
 
     public static function delete($sql, $params=[])
     {
+        static::turn('write');
         return static::insert($sql, $params);
     }
 
     public static function update($sql, $params=[])
     {
+        static::turn('write');
         return static::insert($sql, $params);
     }
 

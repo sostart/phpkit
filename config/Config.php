@@ -7,7 +7,8 @@ class Config
     use LazySingletonTrait, LazyLinkTrait;
 
     static $storage = [];
-
+    
+    // 从文件中载入配置
     protected static function _load($file)
     {
         if (is_file($file)) {
@@ -21,16 +22,7 @@ class Config
         }
     }
 
-    public function __get($name)
-    {
-        return static::get($name);
-    }
-
-    public function __set($name, $value=null)
-    {
-        return static::set($name, $value);
-    }
-
+    // get('database') get('database.default')
     public static function get($name)
     {
         $instance = static::getInstance();
@@ -48,6 +40,7 @@ class Config
         return $return;
     }
 
+    // set('a', 123) set('b.c', 456) set(['a'=>123, 'b.c'=>456])
     public static function set($name, $value=null)
     {
         $instance = static::getInstance();
@@ -63,6 +56,16 @@ class Config
             }
             return $return = $value;
         }
+    }
+
+    public function __get($name)
+    {
+        return static::get($name);
+    }
+    
+    public function __set($name, $value=null)
+    {
+        return static::set($name, $value);
     }
 
     public function __invoke()

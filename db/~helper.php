@@ -2,7 +2,7 @@
 
 function DB()
 {
-    return call_user_func_array(App::get(strtolower(__FUNCTION__)), func_get_args());
+    return call_user_func_array(PHPKit\PHPKit::get(strtolower(__FUNCTION__)), func_get_args());
 }
 
 function insert($table, $data)
@@ -61,19 +61,28 @@ function delete($table, $where='', $order='', $limit='')
     return DB()->delete($sql, $params);
 }
 
-function find($table, $where='', $order='', $limit=1)
+function find()
 {
-    $return = findAll($table, $where, $limit);
-    
-    if ($return && $limit===1) {
-        return $return[0];
-    }
-
-    return $return;
+    $arg = func_get_args(); array_push($arg, 1);
+    return ($return = call_user_func_array('findAll', $arg)) ? $return[0] : $return;
 }
 
-function findAll($table, $where='', $order='', $limit='')
+function findAll($table)
 {
+    $arg = func_get_args();
+    
+    if (isset($arg[1]) && is_string($arg[1]) && ($arg[1]=='*' || preg_match('/^[a-z]([^<>=]|[a-z0-9,`\(\)])+$/', $arg[1]))) {
+        $fields = $arg[1];
+        $where = isset($arg[2]) ? $arg[2] : '';
+        $order = isset($arg[3]) ? $arg[3] : '';
+        $limit = isset($arg[4]) ? $arg[4] : '';
+    } else {
+        $fields = '*';
+        $where = isset($arg[1]) ? $arg[1] : '';
+        $order = isset($arg[2]) ? $arg[2] : '';
+        $limit = isset($arg[3]) ? $arg[3] : '';
+    }
+
     $prefix = DB()->getHandle()->getPrefix();
     
     $params = [];
@@ -94,15 +103,15 @@ function findAll($table, $where='', $order='', $limit='')
                 $params[] = $v;
             }
         }
-        $where = ' WHERE '.substr($str, 5);
+        $where = substr($str, 5);
     }
-    if (!is_string($where)) $where = '';
+    $where = $where&&is_string($where) ? ' WHERE '.$where : '';
     
     $order = $order ? ' ORDER BY '.$order : '';
 
     $limit = $limit ? ' LIMIT '.$limit : '';
 
-    $sql = 'SELECT * FROM `'.$prefix.$table.'`'.$where.$order.$limit;
+    $sql = 'SELECT '.$fields.' FROM `'.$prefix.$table.'`'.$where.$order.$limit;
     
     return DB()->select($sql, $params);
 }

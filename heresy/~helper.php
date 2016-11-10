@@ -12,6 +12,6 @@ if (!function_exists('Heresy')) {
      */
     function Heresy()
     {
-        return call_user_func_array(App::get(strtolower(__FUNCTION__)), func_get_args());
+        return call_user_func_array(PHPKit\PHPKit::get(strtolower(__FUNCTION__)), func_get_args());
     }
 }

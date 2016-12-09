@@ -10,8 +10,6 @@ class PHPKit
 
     use DI;
 
-    protected static $loader;
-
     protected static $tools = [];
 
     protected static $classAlias = [];
@@ -25,11 +23,6 @@ class PHPKit
         });
     }
     
-    protected static function _setLoader($loader)
-    {
-        static::$loader = $loader;
-    }
-
     protected static function _registerTools($tools, $helper=true)
     {
         $basedir = dirname(__DIR__);
@@ -55,8 +48,8 @@ class PHPKit
                 static::set(strtolower($tool), $closure); // di
                 static::alias(strtolower($tool), 'PHPKit\\'.$tool); // di 别名
 
-                static::$loader->addClassMap(['PHPKit\\'.$tool=>$file]);
-                static::$loader->addPsr4('PHPKit\\'.$tool.'\\', $dir);
+                static::get('loader')->addClassMap(['PHPKit\\'.$tool=>$file]);
+                static::get('loader')->addPsr4('PHPKit\\'.$tool.'\\', $dir);
 
                 if ($helper && ($file = $dir.DIRECTORY_SEPARATOR.'~helper.php') && file_exists($file)) {
                     static::loadFiles($file);
@@ -85,7 +78,7 @@ class PHPKit
     protected static function _registerDirs($list)
     {
         foreach ($list as $namespace=>$dir) {
-            static::$loader->addPsr4($namespace, $dir, true);
+            static::get('loader')->addPsr4($namespace, $dir, true);
         }
     }
 

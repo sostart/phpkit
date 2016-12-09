@@ -31,7 +31,7 @@ class Heresy
         // 被蛊惑的名字空间下  加载失败的类 从searchNamespace下尝试加载
         $class = trim($class, '\\');
         $root = ($pos = strpos($class, '\\')) ? substr($class, 0, $pos) : '\\';
-        if (isset(static::$bewitch[$root]) && static::$bewitch[$root]) {
+        if ( (isset(static::$bewitch['\\']) && static::$bewitch['\\']) || (isset(static::$bewitch[$root]) && static::$bewitch[$root]) ) {
             foreach (static::$searchNamespace as $namespace) {
                 $name = ($pos = strrpos($class, '\\')) ? substr($class, $pos+1) : $class;
                 $search_class = $namespace . $name;

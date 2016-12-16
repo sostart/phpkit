@@ -1,42 +1,5 @@
 <?php
 
-if (!function_exists('eachdir')) {
-    /**
-     * 遍历文件文件夹 
-     * 
-     * 回调函数应接收一个参数 值为字符串文件/文件夹名
-     * 回调函数中返回false则跳出遍历, 返回-1则跳过(如果是文件夹)
-     *
-     * @param  string  $dir
-     * @param  object  $callback
-     * @return null
-     */
-    function eachdir($dir, $callback)
-    {
-        $dir = rtrim($dir, '/\\').'/';
-        if (is_dir($dir)) {
-            if ($handle = opendir($dir)) {
-                while (($file=readdir($handle)) !== false) {
-                    if ($file != '.' && $file != '..') {
-                        
-                        $file = $dir.$file;
-
-                        if ( ($signal = $callback($file)) === false ) {
-                            return false;
-                        }
-
-                        if (is_dir($file) && $signal!=-1) {
-                            if (eachdir($file, $callback)===false) {
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
 if (! function_exists('dd') && ! function_exists('ddd')) {
     /**
      * Dump the passed variables and end the script.

@@ -17,7 +17,7 @@ class Route
 
     protected static $routeGroups = [];
 
-    protected static $callback = false;
+    protected static $dispatcher = false;
 
     use LazySingletonTrait, LazyLinkTrait;
     
@@ -31,9 +31,9 @@ class Route
         return new FastRoute;
     }
 
-    protected static function _callback($callback)
+    protected static function _setDispatcher($dispatcher)
     {
-        static::$callback = $callback;
+        static::$dispatcher = $dispatcher;
     }
 
     protected static function _group($uri, $middleware, $callable=null)
@@ -150,7 +150,7 @@ class Route
         static::$route->add($uri, [array_merge(static::$middlewares, (array)$middleware), $callable]);
     }
 
-    protected static function _dispatch($method=false, $uri=false, $callback=false)
+    protected static function _dispatch($uri=false, $method=false, $dispatcher=false)
     {
         $method = $method?:$_SERVER['REQUEST_METHOD'];
         $uri = $uri?:rawurldecode( 
@@ -168,11 +168,11 @@ class Route
             $routeInfo = static::$route->match($uri);
         }
 
-        if ($callback===false) {
-            $callback = static::$callback;
+        if ($dispatcher===false) {
+            $dispatcher = static::$dispatcher;
         }
 
-        return is_callable($callback)?call_user_func($callback, $routeInfo):$routeInfo;
+        return is_callable($dispatcher)?call_user_func($dispatcher, $routeInfo):$routeInfo;
     }
 
     public function __invoke()

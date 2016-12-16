@@ -37,8 +37,14 @@ class PHPKit
                     return call_user_func([class_exists($tool)?$tool:'PHPKit\\'.$tool, 'getInstance']);
                 };
             }
-
-            $dir = $basedir.DIRECTORY_SEPARATOR .strtolower($tool);
+            
+            if (is_array($closure)) {
+                $dir = $closure[0].DIRECTORY_SEPARATOR.strtolower($tool);
+                $closure = $closure[1];
+            } else {
+                $dir = $basedir.DIRECTORY_SEPARATOR .strtolower($tool);    
+            }
+            
             $file = $dir.DIRECTORY_SEPARATOR.$tool.'.php';
 
             if (is_dir($dir) && is_file($file)) {

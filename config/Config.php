@@ -6,7 +6,7 @@ class Config
 {
     use LazySingletonTrait, LazyLinkTrait;
 
-    static $storage = [];
+    protected static $__storage = [];
     
     // 从文件中载入配置
     protected static function _load($file)
@@ -17,7 +17,7 @@ class Config
             $filename  = pathinfo($file, PATHINFO_FILENAME);
 
             if ($extension=='php') {
-                static::$storage = array_merge(static::$storage, [$filename=>include $file]);
+                static::$__storage = array_merge(static::$__storage, [$filename=>include $file]);
             }
         }
     }
@@ -27,7 +27,7 @@ class Config
     {
         $instance = static::getInstance();
 
-        $return = static::$storage;
+        $return = static::$__storage;
 
         foreach (explode('.', $name) as $key) {
             if (isset($return[$key])) {
@@ -50,7 +50,7 @@ class Config
                 static::set($k, $v);
             }
         } else {
-            $return = & static::$storage;
+            $return = & static::$__storage;
             foreach (explode('.', $name) as $key) {
                 $return = & $return[$key];
             }

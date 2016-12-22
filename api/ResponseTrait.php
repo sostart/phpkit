@@ -15,33 +15,33 @@ trait ResponseTrait
         static::$data = ['_c'=>0, '_d'=>''];
     }
     
-    protected static function _error($msg, $code=1)
+    protected static function API_error($msg, $code=1)
     {
         return static::setError($msg, $code);
     }
 
-    protected static function _setError($msg, $code)
+    protected static function API_setError($msg, $code)
     {
         return static::$data = ['_c'=>$code, '_m'=>$msg];
     }
 
-    protected static function _getError()
+    protected static function API_getError()
     {
         return static::$data['_c'] ? static::$data : false;
     }
 
-	protected static function _setData($data)
+	protected static function API_setData($data)
 	{
 		static::$data['_d'] = $data;
         return static::getData();
 	}
 
-	protected static function _setMsg($msg)
+	protected static function API_setMsg($msg)
 	{
 		static::$data['_m'] = $msg;
 	}
 
-	protected static function _getData()
+	protected static function API_getData()
 	{
 		return static::$data;
 	}

@@ -1,24 +1,6 @@
 <?php
 
-if (! function_exists('dd') && ! function_exists('ddd')) {
-    /**
-     * Dump the passed variables and end the script.
-     *
-     * @param  mixed
-     * @return void
-     */
-    function dd()
-    {
-        call_user_func_array('ddd', func_get_args());
-        die(1);        
-    }
-    
-    /**
-     * 只dump变量不退出脚本
-     *
-     * @param  mixed
-     * @return void
-     */
+if ( ! function_exists('ddd') ) {
     function ddd() {
         ob_start();
 
@@ -40,22 +22,21 @@ if (! function_exists('dd') && ! function_exists('ddd')) {
         echo $output;
     }
 }
+if ( ! function_exists('dd') ) {
+    function dd()
+    {
+        call_user_func_array('ddd', func_get_args());
+        die(1);        
+    }
+}
 
-if (! function_exists('PHPKit') && ! function_exists('App')) {
-    /**
-     * PHPKit
-     *
-     * 不传值         获取App实例
-     * 传入单个数组   设置config
-     * 传入单个字符串 获取字符串对应的实例
-     *
-     * @return mixed
-     */
+if ( ! function_exists('PHPKit') ) {
     function PHPKit()
     {
         return call_user_func_array(PHPKit\PHPKit::get(strtolower(__FUNCTION__)), func_get_args());
     }
-
+}
+if ( ! function_exists('App') ) {
     function App()
     {
         return call_user_func_array('PHPKit', func_get_args());

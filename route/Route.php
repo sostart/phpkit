@@ -26,17 +26,17 @@ class Route
         static::$route = static::fastRoute();
     }
 
-    public static function fastRoute()
+    protected static function API_fastRoute()
     {
         return new FastRoute;
     }
 
-    protected static function _setDispatcher($dispatcher)
+    protected static function API_setDispatcher($dispatcher)
     {
         static::$dispatcher = $dispatcher;
     }
 
-    protected static function _group($uri, $middleware, $callable=null)
+    protected static function API_group($uri, $middleware, $callable=null)
     {
         if (is_null($callable)) {
             $callable = $middleware;
@@ -78,7 +78,7 @@ class Route
         }
     }
     
-    protected static function _any($uri, $middleware, $callable=null)
+    protected static function API_any($uri, $middleware, $callable=null)
     {
         if (is_null($callable)) {
             $callable = $middleware;
@@ -90,7 +90,7 @@ class Route
         static::$route->add($uri, [array_merge(static::$middlewares, (array)$middleware), $callable]);
     }
 
-    protected static function _get($uri, $middleware, $callable=null)
+    protected static function API_get($uri, $middleware, $callable=null)
     {
         if (is_null($callable)) {
             $callable = $middleware;
@@ -102,7 +102,7 @@ class Route
         static::$route->add($uri, [array_merge(static::$middlewares, (array)$middleware), $callable]);
     }
 
-    protected static function _post($uri, $middleware, $callable=null)
+    protected static function API_post($uri, $middleware, $callable=null)
     {
         if (is_null($callable)) {
             $callable = $middleware;
@@ -114,7 +114,7 @@ class Route
         static::$route->add($uri, [array_merge(static::$middlewares, (array)$middleware), $callable]);
     }
 
-    protected static function _patch($uri, $middleware, $callable=null)
+    protected static function API_patch($uri, $middleware, $callable=null)
     {
         if (is_null($callable)) {
             $callable = $middleware;
@@ -126,7 +126,7 @@ class Route
         static::$route->add($uri, [array_merge(static::$middlewares, (array)$middleware), $callable]);
     }
 
-    protected static function _put($uri, $middleware, $callable=null)
+    protected static function API_put($uri, $middleware, $callable=null)
     {
         if (is_null($callable)) {
             $callable = $middleware;
@@ -138,7 +138,7 @@ class Route
         static::$route->add($uri, [array_merge(static::$middlewares, (array)$middleware), $callable]);
     }
 
-    protected static function _delete($uri, $middleware, $callable=null)
+    protected static function API_delete($uri, $middleware, $callable=null)
     {
         if (is_null($callable)) {
             $callable = $middleware;
@@ -150,7 +150,7 @@ class Route
         static::$route->add($uri, [array_merge(static::$middlewares, (array)$middleware), $callable]);
     }
 
-    protected static function _dispatch($uri=false, $method=false, $dispatcher=false)
+    protected static function API_dispatch($uri=false, $method=false, $dispatcher=false)
     {
         $method = $method?:$_SERVER['REQUEST_METHOD'];
         $uri = $uri?:rawurldecode( 

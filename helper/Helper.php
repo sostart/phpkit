@@ -24,10 +24,8 @@ class Helper
 
     public static function __callStatic($name, $arguments)
     {
-        $instance = static::getInstance();
-        if (method_exists($instance, $name)) {
-            return is_null( $return = call_user_func_array([$instance, $name], $arguments) ) ? $instance: $return;
-        } elseif (isset(static::$storage[$name])) {
+        $instance = static::getInstance();        
+        if (isset(static::$storage[$name])) {
             return call_user_func_array(static::$storage[$name], $arguments);
         } else {
             throw new Exception($name . ' 未定义');

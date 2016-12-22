@@ -32,7 +32,7 @@ class Session
         }
     }
 
-    protected static function _start($config)
+    protected static function API_start($config)
     {
         static::setConfig($config);
         session_start();

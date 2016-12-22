@@ -23,12 +23,12 @@ class API
         
     }
 
-    protected static function _group($uri, $middlewares, $callable=null)
+    protected static function API_group($uri, $middlewares, $callable=null)
     {
         static::register(chr(29).$uri, $middlewares, $callable);
     }
 
-    protected static function _register($uri, $middlewares, $callable=null)
+    protected static function API_register($uri, $middlewares, $callable=null)
     {
         $uri = $uri=='/'?$uri:trim($uri, '/');
 
@@ -51,7 +51,7 @@ class API
     }
     
     // 只能切换顶级分组
-    protected static function _switchGroup($group)
+    protected static function API_switchGroup($group)
     {
         if (!isset(static::$container[$group])) {
             throw new Exception('不存在的分组 '.$group);
@@ -60,7 +60,7 @@ class API
         }
     }
 
-    protected static function _request()
+    protected static function API_request()
     {
         $method = false;
         $params = [];

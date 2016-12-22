@@ -9,7 +9,7 @@ class Config
     protected static $__storage = [];
     
     // 从文件中载入配置
-    protected static function _load($file)
+    protected static function API_load($file)
     {
         if (is_file($file)) {
             

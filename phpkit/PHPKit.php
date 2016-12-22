@@ -16,6 +16,7 @@ class PHPKit
     
     protected static function init()
     {
+        // 别名类自动载入
         spl_autoload_register(function($class){
             if (isset(static::$classAlias[$class])) {
                 class_alias(static::$classAlias[$class], $class);
@@ -23,7 +24,7 @@ class PHPKit
         });
     }
     
-    protected static function _registerTools($tools, $helper=true)
+    protected static function API_registerTools($tools, $helper=true)
     {
         $basedir = dirname(__DIR__);
 
@@ -67,28 +68,28 @@ class PHPKit
         }
     }
 
-    protected static function _loadTools($tools)
+    protected static function API_loadTools($tools)
     {
         foreach ((array)$tools as $tool) {
             static::get(strtolower($tool));
         }
     }
 
-    protected static function _loadFiles($files)
+    protected static function API_loadFiles($files)
     {
         foreach ((array)$files as $file) {
             \Composer\Autoload\includeFile($file);
         }
     }
 
-    protected static function _registerDirs($list)
+    protected static function API_registerDirs($list)
     {
         foreach ($list as $namespace=>$dir) {
             static::get('loader')->addPsr4($namespace, $dir, true);
         }
     }
 
-    protected static function _classAlias($alias, $target=false)
+    protected static function API_classAlias($alias, $target=false)
     {
         if (is_array($alias)) {
             static::$classAlias = array_merge(static::$classAlias, $alias);
@@ -147,10 +148,8 @@ trait DI
         return static::get($name);
     }
 
-    public static function get($name)
+    protected static function API_get($name)
     {
-        $instance = static::getInstance();
-
         if (isset(static::$alias[$name])) {
             return static::get(static::$alias[$name]);
         } elseif (isset(static::$singleton[$name])) {
@@ -159,9 +158,10 @@ trait DI
             static::$singleton[$name] = false; // 防止在call_user_func中重复调用
             return static::$singleton[$name] = call_user_func(static::$container[$name]);
         }
+        return false;
     }
 
-    protected static function _set($list, $value=null)
+    protected static function API_set($list, $value=null)
     {
         if (is_string($list) && !is_null($value)) {
             $list = [$list=>$value];
@@ -178,7 +178,7 @@ trait DI
         }
     }
 
-    protected static function _alias($list, $value=null)
+    protected static function API_alias($list, $value=null)
     {
         if (is_string($list) && !is_null($value)) {
             $list = [$list=>$value];

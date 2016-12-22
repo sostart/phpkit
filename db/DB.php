@@ -9,25 +9,25 @@ class DB
     use LazySingletonTrait, LazyLinkTrait;
     
     protected static $conname;
-    protected static $turn = 'auto'; // auto自动 read/write
+    protected static $switch = 'auto'; // auto自动 read/write
     
     protected static $config = [];
     protected static $dbContainer=[];
 
-    protected static function _setConfig($config)
+    protected static function API_setConfig($config)
     {
         static::$conname = $config['default'];
         static::$config = $config;
     }
 
-    protected static function _getHandle($conname=null, $turn=false)
+    protected static function API_getHandle($conname=null, $switch=false)
     {
         $conname = $conname?:static::$conname;
         
-        $turn = (($turn?:static::$turn)=='write')?'write':'read'; // auto默认为read
+        $switch = (($switch?:static::$switch)=='write')?'write':'read'; // auto默认为read
         
         // 首先查看是否已经有实例
-        if (!isset(static::$dbContainer[$conname][$turn])) {
+        if (!isset(static::$dbContainer[$conname][$switch])) {
             
             // 没有实例查看是否有配置
             if (isset(static::$config['connections'][$conname]) && is_array(static::$config['connections'][$conname])) {
@@ -40,8 +40,8 @@ class DB
                         if (isset($config['host'])) {
                             static::$dbContainer[$conname]['read'] = static::$dbContainer[$conname]['write'] = new \PHPKit\DB\Adapter\MySQL($config);
                         } elseif (isset($config['read']) && isset($config['write'])) {
-                            $config['host'] = $config[$turn]['host'];
-                            static::$dbContainer[$conname][$turn] = static::$dbContainer[$conname]['write'] = new \PHPKit\DB\Adapter\MySQL($config);
+                            $config['host'] = $config[$switch]['host'];
+                            static::$dbContainer[$conname][$switch] = static::$dbContainer[$conname]['write'] = new \PHPKit\DB\Adapter\MySQL($config);
                         } else {
                             throw new Exception('数据库连接配置错误');
                         }
@@ -51,10 +51,10 @@ class DB
                 }
             }
         }
-        return static::$dbContainer[$conname][$turn];
+        return static::$dbContainer[$conname][$switch];
     }
 
-    protected static function _connection()
+    protected static function API_connection()
     {
 		$num = func_num_args();
 
@@ -65,14 +65,14 @@ class DB
         } elseif ($num == 1) {
             $arg = func_get_arg(0);
             if (is_string($arg)) {
-                static::turn($arg);
+                static::switchTo($arg);
             } elseif (is_array($arg)) {
                 static::setConfig($config);
             }
         }
     }
-    
-    protected static function _turn()
+
+    protected static function API_switchTo()
     {
         $num = func_num_args();
         
@@ -80,24 +80,24 @@ class DB
             $tmp = explode('.', func_get_arg(0));
             if (count($tmp)==1) {
                 if (in_array($tmp[0], ['auto', 'read', 'write'])) {
-                    static::$turn = $tmp[0];
+                    static::$switch = $tmp[0];
                 } elseif (isset(static::$config['connections'][$tmp[0]])) {
                     static::$conname = $tmp[0];
                 } else {
                     throw new Exception('turn');
                 }
             } elseif (count($tmp)==2) {
-                static::turn($tmp[0], $tmp[1]);
+                static::switchTo($tmp[0], $tmp[1]);
             } else {
                 throw new Exception('turn');
             }
         } elseif ($num == 2) {
             $conname = func_get_arg(0);
-            $turn = func_get_arg(1);
+            $switch = func_get_arg(1);
 
-            if (isset(static::$config['connections'][$conname]) && in_array($turn, ['auto', 'read', 'write'])) {
+            if (isset(static::$config['connections'][$conname]) && in_array($switch, ['auto', 'read', 'write'])) {
                 static::$conname = $conname;
-                static::$turn = $turn;
+                static::$switch = $switch;
             } else {
                 throw new Exception('turn');
             }
@@ -106,25 +106,18 @@ class DB
         }
     }
 
-    protected static function _switchTo()
+    protected static function API_getSwitch()
     {
-        $instance = static::getInstance();
-        call_user_func_array([$instance, 'turn'], func_get_args());
-    }
-
-    public static function getTurn()
-    {
-        $instance = static::getInstance();
-        return static::$turn;
+        return static::$switch;
     }
     
     // 用于查询操作
-    public static function query($sql, $params=[], $useReadPdo=null)
+    protected static function API_query($sql, $params=[], $useReadPdo=null)
     {
         $instance = static::getInstance();
         
-        $turn = is_null($useReadPdo) ?  ((static::$turn=='auto') ? 'read' : static::$turn) : (($useReadPdo==true) ? 'read' : 'write');
-        $db = static::getHandle(static::$conname, $turn);
+        $switch = is_null($useReadPdo) ?  ((static::$switch=='auto') ? 'read' : static::$switch) : (($useReadPdo==true) ? 'read' : 'write');
+        $db = static::getHandle(static::$conname, $switch);
         $pdo = $db->getPDO();
 
         $stm = $pdo->prepare($sql);        
@@ -136,12 +129,12 @@ class DB
     }
     
     // 用于增删改操作
-    public static function execute($sql, $params=[], $useReadPdo=null)
+    protected static function API_execute($sql, $params=[], $useReadPdo=null)
     {
         $instance = static::getInstance();
 
-        $turn = is_null($useReadPdo) ?  ((static::$turn=='auto') ? 'write' : static::$turn) : (($useReadPdo==true) ? 'read' : 'write');
-        $db = static::getHandle(static::$conname, $turn);
+        $switch = is_null($useReadPdo) ?  ((static::$switch=='auto') ? 'write' : static::$switch) : (($useReadPdo==true) ? 'read' : 'write');
+        $db = static::getHandle(static::$conname, $switch);
         $pdo = $db->getPDO();
 
         $stm = $pdo->prepare($sql);
@@ -157,34 +150,31 @@ class DB
 
 
 
-    public static function select($sql, $params=[])
+    protected static function API_select($sql, $params=[])
     {
-        $instance = static::getInstance();
         return static::query($sql, $params);
     }
 
-    public static function insert($sql, $params=[])
-    {
-        $instance = static::getInstance();
-        
-        $turn = static::getTurn();
-        static::turn('write');
+    protected static function API_insert($sql, $params=[])
+    {        
+        $switch = static::getSwitch();
+        static::switchTo('write');
         $return = static::execute($sql, $params);
         if ($return===false) {
-            static::turn($turn);
+            static::switchTo($switch);
         }
         return $return;
     }
 
-    public static function delete($sql, $params=[])
+    protected static function API_delete($sql, $params=[])
     {
-        static::turn('write');
+        static::switchTo('write');
         return static::insert($sql, $params);
     }
 
-    public static function update($sql, $params=[])
+    protected static function API_update($sql, $params=[])
     {
-        static::turn('write');
+        static::switchTo('write');
         return static::insert($sql, $params);
     }
 
@@ -199,22 +189,22 @@ class DB
 
 
 
-    public static function transaction()
+    protected static function API_transaction()
     {
         
     }
 
-    public static function beginTransaction()
+    protected static function API_beginTransaction()
     {
         
     }
 
-    public static function rollBack()
+    protected static function API_rollBack()
     {
     
     }
 
-    public static function commit()
+    protected static function API_commit()
     {
     
     }

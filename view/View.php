@@ -8,28 +8,28 @@ class View
     
     protected static $dir = [];
 
-    protected static function _setViewsDir($dir)
+    protected static function API_setViewsDir($dir)
     {
         static::$dir = array_map(function ($v) {
             return rtrim($v, '\/');
         }, (array)$dir);
     }
 
-    protected static function _addViewsDir($dir)
+    protected static function API_addViewsDir($dir)
     {
         foreach ((array)$dir as $v) {
             array_unshift(static::$dir, rtrim($v, '\/'));
         }
     }
 
-    protected static function _removeViewsDir($dir)
+    protected static function API_removeViewsDir($dir)
     {
         if ($index = array_search($dir, static::$dir)) {
             unset(static::$dir[$index]);
         }
     }
 
-    protected static function _render($view, $data=null)
+    protected static function API_render($view, $data=null)
     {
         foreach (static::$dir as $dir) {
             $file = $dir.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $view).'.php';

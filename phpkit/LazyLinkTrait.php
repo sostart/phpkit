@@ -15,18 +15,12 @@ trait LazyLinkTrait
     {
         $instance = static::getInstance();
         
-        $name = '_'.$name;
+        $name = 'API_'.$name;
 
         if (!method_exists($instance, $name)) {
-            throw new Exception($name . ' 未定义');
+            throw new Exception(__CLASS__. " $name ". ' 未定义');
         }
         
         return is_null( $return = call_user_func_array([$instance, $name], $arguments) ) ? $instance: $return; 
-    }
-
-    public function __invoke()
-    {
-        $instance = static::getInstance();
-        return $instance;
     }
 }

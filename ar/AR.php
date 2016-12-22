@@ -10,12 +10,12 @@ class AR
 
     protected static $storage=[];
 
-    protected static function _handle($handle)
+    protected static function API_handle($handle)
     {
         static::$handle = $handle;
     }
 
-	public static function get($name)
+	protected static function API_get($name)
 	{
 		static::getInstance();
         return isset(static::$storage[$name])? static::$storage[$name] : (

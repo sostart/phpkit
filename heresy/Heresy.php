@@ -44,12 +44,12 @@ class Heresy
         return true;
     }
 
-    protected static function _searchNamespace($list)
+    protected static function API_searchNamespace($list)
     {
         static::$searchNamespace = array_merge((array)$list, static::$searchNamespace);
     }
 
-    protected static function _bewitch($namespace)
+    protected static function API_bewitch($namespace)
     {
         foreach ((array)$namespace as $one) {
             $one = trim($one, '\\')?:'\\';

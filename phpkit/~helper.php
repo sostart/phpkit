@@ -1,5 +1,26 @@
 <?php
 
+if ( ! function_exists('PHPKit') ) {
+    function PHPKit()
+    {
+        return call_user_func_array(PHPKit\PHPKit::get(strtolower(__FUNCTION__)), func_get_args());
+    }
+}
+if ( ! function_exists('App') ) {
+    function App()
+    {
+        return call_user_func_array('PHPKit', func_get_args());
+    }
+}
+
+if ( ! function_exists('dd') ) {
+    function dd()
+    {
+        call_user_func_array('ddd', func_get_args());
+        die(1);        
+    }
+}
+
 if ( ! function_exists('ddd') ) {
     function ddd() {
         ob_start();
@@ -20,25 +41,5 @@ if ( ! function_exists('ddd') ) {
         }
 
         echo $output;
-    }
-}
-if ( ! function_exists('dd') ) {
-    function dd()
-    {
-        call_user_func_array('ddd', func_get_args());
-        die(1);        
-    }
-}
-
-if ( ! function_exists('PHPKit') ) {
-    function PHPKit()
-    {
-        return call_user_func_array(PHPKit\PHPKit::get(strtolower(__FUNCTION__)), func_get_args());
-    }
-}
-if ( ! function_exists('App') ) {
-    function App()
-    {
-        return call_user_func_array('PHPKit', func_get_args());
     }
 }

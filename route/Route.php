@@ -7,8 +7,8 @@ use PHPKit\Route\FastRoute;
 
 class Route
 {
-    const FOUND = 200;
-    const NOT_FOUND = 404;
+    const FOUND = FastRoute::FOUND;
+    const NOT_FOUND = FastRoute::NOT_FOUND;
     
     protected static $route;
 
@@ -152,7 +152,7 @@ class Route
 
     protected static function API_dispatch($uri=false, $method=false, $dispatcher=false)
     {
-        $method = $method?:$_SERVER['REQUEST_METHOD'];
+        $method = $method?:(isset($_SERVER['REQUEST_METHOD'])?$_SERVER['REQUEST_METHOD']:'GET');
         $uri = $uri?:rawurldecode( 
             isset($_SERVER['PATH_INFO']) ? ($_SERVER['PATH_INFO']?:'/') :
             ( (false !== $pos = strpos($uri, '?')) ? substr($_SERVER['REQUEST_URI'], 0, $pos) : $_SERVER['REQUEST_URI'])

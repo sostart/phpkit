@@ -22,6 +22,11 @@ class Helper
         return static::$storage[$key] = $val;
     }
 
+    public function __get($key)
+    {
+        return static::$storage[$key];
+    }
+
     public static function __callStatic($name, $arguments)
     {
         $instance = static::getInstance();        

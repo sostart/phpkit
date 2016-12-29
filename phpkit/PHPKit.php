@@ -51,7 +51,7 @@ class PHPKit
                 static::alias(strtolower($tool), 'PHPKit\\'.$tool); // di 别名
 
                 static::get('loader')->addClassMap(['PHPKit\\'.$tool=>$file]);
-                static::get('loader')->addPsr4('PHPKit\\'.$tool.'\\', $dir);
+                static::get('loader')->setPsr4('PHPKit\\'.$tool.'\\', $dir);
 
                 if ($helper && ($file = $dir.DIRECTORY_SEPARATOR.'~helper.php') && file_exists($file)) {
                     includeFile($file);
@@ -214,7 +214,7 @@ trait Loader
         static::$classMap = array_merge(static::$classMap, $classMap);
     }
 
-    protected static function API_addPsr4($prefix, $paths, $prepend = false)
+    protected static function API_setPsr4($prefix, $paths, $prepend = false)
     {
         if ($prepend) {
             static::$psr4 = array_reverse(static::$psr4);

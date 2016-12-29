@@ -16,7 +16,7 @@ class Heresy
 
     public static function init()
     {
-        spl_autoload_register(['static', 'autoload']);
+        spl_autoload_register(['PHPKit\Heresy', 'autoload']);
     }
 
     protected static function autoload($class)

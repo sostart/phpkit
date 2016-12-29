@@ -4,27 +4,22 @@ namespace PHPKit;
 
 use Exception;
 
+include __DIR__.'/LazyTrait.php';
+
 class PHPKit
 {
-    use LazySingletonTrait, LazyLinkTrait;
-
-    use DI;
+    use LazyTrait, DI, Loader;
 
     protected static $tools = [];
-
-    protected static $classAlias = [];
     
     protected static function init()
     {
-        // 别名类自动载入
-        spl_autoload_register(function($class){
-            if (isset(static::$classAlias[$class])) {
-                class_alias(static::$classAlias[$class], $class);
-            }
-        });
+        spl_autoload_register(['PHPKit\PHPKit', 'autoload']);
+        static::set('loader', static::getInstance())->registerTools(['PHPKit'])->alias('phpkit', 'app');
+        static::classAlias(['PHPKit\App' => static::class]);
     }
-    
-    protected static function API_registerTools($tools, $helper=true)
+
+    protected static function API_registerTools(array $tools, $helper=true)
     {
         $basedir = dirname(__DIR__);
 
@@ -59,7 +54,7 @@ class PHPKit
                 static::get('loader')->addPsr4('PHPKit\\'.$tool.'\\', $dir);
 
                 if ($helper && ($file = $dir.DIRECTORY_SEPARATOR.'~helper.php') && file_exists($file)) {
-                    static::loadFiles($file);
+                    includeFile($file);
                 }
 
             } else {
@@ -72,29 +67,6 @@ class PHPKit
     {
         foreach ((array)$tools as $tool) {
             static::get(strtolower($tool));
-        }
-    }
-
-    protected static function API_loadFiles($files)
-    {
-        foreach ((array)$files as $file) {
-            \Composer\Autoload\includeFile($file);
-        }
-    }
-
-    protected static function API_registerDirs($list)
-    {
-        foreach ($list as $namespace=>$dir) {
-            static::get('loader')->addPsr4($namespace, $dir, true);
-        }
-    }
-
-    protected static function API_classAlias($alias, $target=false)
-    {
-        if (is_array($alias)) {
-            static::$classAlias = array_merge(static::$classAlias, $alias);
-        } else {
-            static::$classAlias = array_merge(static::$classAlias, [$target=>$alias]);
         }
     }
 
@@ -192,4 +164,78 @@ trait DI
             }
         }
     }
+}
+
+trait Loader
+{
+    protected static $classAlias = [];
+    protected static $classMap = [];
+    protected static $psr4 = ['PHPKit\\'=>__DIR__];
+    
+    protected static function autoload($class)
+    {
+        // 别名类自动载入
+        if (isset(static::$classAlias[$class])) {
+            return class_alias(static::$classAlias[$class], $class);
+        }
+        
+        // classmap
+        if (isset(static::$classMap[$class])) {
+            return includeFile(static::$classMap[$class]);
+        }
+
+        // psr4
+        $logicalPathPsr4 = strtr($class, '\\', DIRECTORY_SEPARATOR) . '.php';
+        foreach (static::$psr4 as $prefix=>$dir) {
+            if (strncmp($prefix, $class, strlen($prefix))===0) {
+                if (is_file($file = $dir.DIRECTORY_SEPARATOR.substr($logicalPathPsr4, strlen($prefix)))) {
+                    return includeFile($file);
+                }
+            }
+        }
+    }
+
+    protected static function API_loadFiles($files)
+    {
+        foreach ((array)$files as $file) {
+            includeFile($file);
+        }
+    }
+
+    protected static function API_registerDirs($list)
+    {
+        foreach ($list as $namespace=>$dir) {
+            static::get('loader')->addPsr4($namespace, $dir, true);
+        }
+    }
+
+    protected static function API_addClassMap(array $classMap)
+    {
+        static::$classMap = array_merge(static::$classMap, $classMap);
+    }
+
+    protected static function API_addPsr4($prefix, $paths, $prepend = false)
+    {
+        if ($prepend) {
+            static::$psr4 = array_reverse(static::$psr4);
+            static::$psr4[$prefix] = $paths;
+            static::$psr4 = array_reverse(static::$psr4);
+        } else {
+            static::$psr4[$prefix] = $paths;
+        }
+    }
+
+    protected static function API_classAlias($alias, $target=false)
+    {
+        if (is_array($alias)) {
+            static::$classAlias = array_merge(static::$classAlias, $alias);
+        } else {
+            static::$classAlias = array_merge(static::$classAlias, [$target=>$alias]);
+        }
+    }
+}
+
+function includeFile($file)
+{
+    include $file;
 }

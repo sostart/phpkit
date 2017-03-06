@@ -52,16 +52,38 @@ class Session
         return new $class(static::$config);
     }
     
-    public static function set($key, $val)
+    public static function set($name, $value=null)
     {
         $instance = static::getInstance();
-        return $_SESSION[$key] = $val;
+
+        if (is_array($name)) {
+            foreach ($name as $k=>$v) {
+                static::set($k, $v);
+            }
+        } else {
+            $return = & $_SESSION;
+            foreach (explode('.', $name) as $key) {
+                $return = & $return[$key];
+            }
+            return $return = $value;
+        }
     }
 
-    public static function get($key)
+    public static function get($name)
     {
         $instance = static::getInstance();
-        return isset($_SESSION[$key])?$_SESSION[$key]:null;
+
+        $return = $_SESSION;
+
+        foreach (explode('.', $name) as $key) {
+            if (isset($return[$key])) {
+                $return = $return[$key];
+            } else {
+                return null;
+            }
+        }
+
+        return $return;
     }
 
     public static function delete($key)

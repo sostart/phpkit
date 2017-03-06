@@ -58,7 +58,7 @@ class Route
                 $callable = $arr[1];
 
                 $group = static::$group;
-                static::$group = static::$group.$uri;
+                static::$group = trim(static::$group.$uri, '/');
                 
                 $middlewares = static::$middlewares;
                 static::$middlewares = array_merge(static::$middlewares, (array)$middleware);
@@ -152,10 +152,10 @@ class Route
 
     protected static function API_dispatch($uri=false, $method=false, $dispatcher=false)
     {
-        $method = $method?:(isset($_SERVER['REQUEST_METHOD'])?$_SERVER['REQUEST_METHOD']:'GET');
+        $method = $method?:(isset($_REQUEST['_method'])?strtoupper($_REQUEST['_method']):(isset($_SERVER['REQUEST_METHOD'])?$_SERVER['REQUEST_METHOD']:'GET'));
         $uri = $uri?:rawurldecode( 
             isset($_SERVER['PATH_INFO']) ? ($_SERVER['PATH_INFO']?:'/') :
-            ( (false !== $pos = strpos($uri, '?')) ? substr($_SERVER['REQUEST_URI'], 0, $pos) : $_SERVER['REQUEST_URI'])
+            ( isset($_SERVER['REQUEST_URI']) ? ((false !== $pos = strpos($_SERVER['REQUEST_URI'], '?')) ? substr($_SERVER['REQUEST_URI'], 0, $pos) : $_SERVER['REQUEST_URI']) : '/')
         );
         $uri = '/'.trim($uri, '/');
 

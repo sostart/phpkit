@@ -58,7 +58,7 @@ class Route
                 $callable = $arr[1];
 
                 $group = static::$group;
-                static::$group = trim(static::$group.$uri, '/');
+                static::$group = '/'.trim(static::$group.$uri, '/');
                 
                 $middlewares = static::$middlewares;
                 static::$middlewares = array_merge(static::$middlewares, (array)$middleware);

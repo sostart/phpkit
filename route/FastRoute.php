@@ -47,6 +47,6 @@ class FastRoute
             }
         }
 
-        return [FastRoute::NOT_FOUND, '', []];
+        return [FastRoute::NOT_FOUND, [], []];
     }
 }

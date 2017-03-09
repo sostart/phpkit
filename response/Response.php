@@ -69,7 +69,7 @@ class Response
             }
         } else {
             header('HTTP/1.1 '.static::status().' '.static::message());
-            return static::content();
+            return (string)static::content();
         }
     }
 

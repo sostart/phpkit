@@ -40,6 +40,12 @@ class Config
         return $return;
     }
 
+    public static function all()
+    {
+        $instance = static::getInstance();
+        return static::$__storage;
+    }
+
     // set('a', 123) set('b.c', 456) set(['a'=>123, 'b.c'=>456])
     public static function set($name, $value=null)
     {

@@ -10,6 +10,8 @@ class View
 
     protected static $dir = [];
 
+    protected static $share = [];
+
     protected static function API_setViewsDir($dir)
     {
         static::$dir = array_map(function ($v) {
@@ -28,6 +30,16 @@ class View
     {
         if ($index = array_search($dir, static::$dir)) {
             unset(static::$dir[$index]);
+        }
+    }
+
+    protected static function API_share($key, $val=null)
+    {
+        if (is_string($key)) {
+            $key = [$key=>$val];
+        }
+        foreach ($key as $k=>$v) {
+            static::$share[$k] = $v;
         }
     }
     
@@ -71,8 +83,10 @@ class View
         }
     }
 
-    protected static function API_render($view, $data=null)
+    protected static function API_render($view, $data=[])
     {
+        $data = array_merge(static::$share, $data);
+
         foreach (static::$dir as $dir) {
             $file = $dir.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $view).'.php';
             $blade = $dir.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $view).'.blade.php';
@@ -83,6 +97,7 @@ class View
                 return static::renderBlade($blade, $data);
             }
         }
+
         return '';
     }
 

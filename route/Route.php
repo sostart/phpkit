@@ -85,8 +85,8 @@ class Route
             $middleware = [];
         }
 
-        $uri = '/'.trim($uri, '/');
-        $uri = (rtrim(static::$group.$uri, '/')?:'/');
+        $uri = (rtrim('/'.trim(static::$group.'/'.trim($uri, '/'), '/'), '/')?:'/');
+
         static::$route->add($uri, [array_merge(static::$middlewares, (array)$middleware), $callable]);
     }
 
@@ -97,8 +97,8 @@ class Route
             $middleware = [];
         }
 
-        $uri = '/'.trim($uri, '/');
-        $uri = 'GET '.(rtrim(static::$group.$uri, '/')?:'/');
+        $uri = 'GET '.(rtrim('/'.trim(static::$group.'/'.trim($uri, '/'), '/'), '/')?:'/');
+
         static::$route->add($uri, [array_merge(static::$middlewares, (array)$middleware), $callable]);
     }
 
@@ -109,8 +109,8 @@ class Route
             $middleware = [];
         }
 
-        $uri = '/'.trim($uri, '/');
-        $uri = 'POST '.(rtrim(static::$group.$uri, '/')?:'/');
+        $uri = 'POST '.(rtrim('/'.trim(static::$group.'/'.trim($uri, '/'), '/'), '/')?:'/');
+
         static::$route->add($uri, [array_merge(static::$middlewares, (array)$middleware), $callable]);
     }
 
@@ -121,8 +121,8 @@ class Route
             $middleware = [];
         }
 
-        $uri = '/'.trim($uri, '/');
-        $uri = 'PATCH '.(rtrim(static::$group.$uri, '/')?:'/');
+        $uri = 'PATCH '.(rtrim('/'.trim(static::$group.'/'.trim($uri, '/'), '/'), '/')?:'/');
+
         static::$route->add($uri, [array_merge(static::$middlewares, (array)$middleware), $callable]);
     }
 
@@ -133,8 +133,8 @@ class Route
             $middleware = [];
         }
 
-        $uri = '/'.trim($uri, '/');
-        $uri = 'PUT '.(rtrim(static::$group.$uri, '/')?:'/');
+        $uri = 'PUT '.(rtrim('/'.trim(static::$group.'/'.trim($uri, '/'), '/'), '/')?:'/');
+
         static::$route->add($uri, [array_merge(static::$middlewares, (array)$middleware), $callable]);
     }
 
@@ -145,8 +145,8 @@ class Route
             $middleware = [];
         }
 
-        $uri = '/'.trim($uri, '/');
-        $uri = 'DELETE '.(rtrim(static::$group.$uri, '/')?:'/');
+        $uri = 'DELETE '.(rtrim('/'.trim(static::$group.'/'.trim($uri, '/'), '/'), '/')?:'/');
+
         static::$route->add($uri, [array_merge(static::$middlewares, (array)$middleware), $callable]);
     }
 

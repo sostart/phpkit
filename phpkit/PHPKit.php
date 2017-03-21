@@ -22,9 +22,13 @@ class PHPKit
     protected static function API_registerTools(array $tools, $helper=true)
     {
         $basedir = dirname(__DIR__);
+        
+        $consthelper = $helper;
 
         foreach ((array)$tools as $tool=>$closure) {
             
+            $helper = $consthelper;
+
             if (is_numeric($tool) && is_string($closure)) {
                 
                 $tool = $closure;
@@ -35,8 +39,9 @@ class PHPKit
             }
             
             if (is_array($closure)) {
-                $dir = $closure[0].DIRECTORY_SEPARATOR.strtolower($tool);
-                $closure = $closure[1];
+                $dir = ($closure[0]?:$basedir).DIRECTORY_SEPARATOR.strtolower($tool);
+                if (isset($closure[2])) $helper = $closure[2];
+                if (isset($closure[1]) && $closure[1]) $closure = $closure[1];
             } else {
                 $dir = $basedir.DIRECTORY_SEPARATOR .strtolower($tool);    
             }
@@ -237,5 +242,5 @@ trait Loader
 
 function includeFile($file)
 {
-    include $file;
+    include_once $file;
 }

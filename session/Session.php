@@ -16,14 +16,14 @@ class Session
             session_set_save_handler(static::getHandle($config['driver']));
         }
 
-        if (isset($_REQUEST[$config['token']])) {
+        if (isset($_REQUEST[$config['token']]) && !empty($_REQUEST[$config['token']])) {
             session_name($config['token']);
             session_id($_REQUEST[$config['token']]);
 
             if (isset($_COOKIE[$config['cookie']])) {
                 setCookie($config['cookie'], '', time()-3600, '/');
             }
-        } elseif (isset($_COOKIE[$config['cookie']])) {
+        } elseif (isset($_COOKIE[$config['cookie']]) && !empty($_COOKIE[$config['cookie']])) {
             session_name($config['cookie']);
             session_id($_COOKIE[$config['cookie']]);
         } else {
@@ -41,7 +41,7 @@ class Session
         session_start();
     }
 
-    protected static function API_getId()
+    protected static function API_getID()
     {
         return session_id();
     }

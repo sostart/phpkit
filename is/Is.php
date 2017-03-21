@@ -19,6 +19,11 @@ class Is
         return false;
     }
 
+    public static function url($str)
+    {
+        return !(filter_var($str, FILTER_VALIDATE_URL)===false);
+    }
+
     public function __invoke()
     {
         $instance = static::getInstance();

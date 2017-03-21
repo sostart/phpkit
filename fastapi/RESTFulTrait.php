@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPKit\API;
+namespace PHPKit\FastAPI;
 
 trait RESTFulTrait
 {

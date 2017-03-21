@@ -4,13 +4,13 @@ namespace PHPKit;
 
 use Exception;
 
-class API
+class FastAPI
 {
     const ERROR_NOAPI = 1;
 
     use LazySingletonTrait, LazyLinkTrait;
 
-    use API\ResponseTrait, API\RESTFulTrait;
+    use FastAPI\ResponseTrait, FastAPI\RESTFulTrait;
 
     protected static $group = '';
 

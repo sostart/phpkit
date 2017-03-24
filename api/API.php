@@ -33,13 +33,17 @@ class API
             $url = isset(static::$config['domain'])?static::$config['domain'].'/'.ltrim($url,'/'):$url;
         }
 
-        $params = array_merge(static::$config['params'], $params);
+        $params = http_build_query(array_merge(static::$config['params'], $params));
+        $method = strtoupper($method);
+        if ($method==='GET') {
+            $url .= '?'.$params;
+        }
 
         $rs = file_get_contents($url, false, stream_context_create([  
             'http' => [  
                 'method' => $method,
                 'header' => 'Content-type:application/x-www-form-urlencoded',  
-                'content' => http_build_query($params),  
+                'content' => $params,
             ]
         ]));
 

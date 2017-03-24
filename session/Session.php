@@ -8,26 +8,23 @@ class Session
     
     protected static $config=[];
 
-    protected static function setConfig($config)
+    protected static function API_setConfig($config)
     {
         static::$config = $config;
 
         if ($config['driver']!='file') {
             session_set_save_handler(static::getHandle($config['driver']));
+        } else {
+            if (isset($config['save_path'])) {
+                session_save_path($config['save_path']);
+            }
         }
 
-        if (isset($_REQUEST[$config['token']]) && !empty($_REQUEST[$config['token']])) {
-            session_name($config['token']);
-            session_id($_REQUEST[$config['token']]);
-
-            if (isset($_COOKIE[$config['cookie']])) {
-                setCookie($config['cookie'], '', time()-3600, '/');
-            }
-        } elseif (isset($_COOKIE[$config['cookie']]) && !empty($_COOKIE[$config['cookie']])) {
-            session_name($config['cookie']);
-            session_id($_COOKIE[$config['cookie']]);
+        if (isset($_COOKIE[$config['cookie_name']]) && !empty($_COOKIE[$config['cookie_name']])) {
+            session_name($config['cookie_name']);
+            session_id($_COOKIE[$config['cookie_name']]);
         } else {
-            session_name($config['cookie']);
+            session_name($config['cookie_name']);
             session_id();
         }
     }
@@ -48,7 +45,7 @@ class Session
 
     protected static function getHandle($driver)
     {
-        $class = 'PHPKit\Session\\Adapter\\'.ucfirst($driver).'Session';
+        $class = 'PHPKit\Session\Adapter\\'.ucfirst($driver).'Session';
         return new $class(static::$config);
     }
     

@@ -40,12 +40,17 @@ class DB
                         if (isset($config['host'])) {
                             static::$dbContainer[$conname]['read'] = static::$dbContainer[$conname]['write'] = new \PHPKit\DB\Adapter\MySQL($config);
                         } elseif (isset($config['read']) && isset($config['write'])) {
-                            $config['host'] = $config[$switch]['host'];
-                            static::$dbContainer[$conname][$switch] = static::$dbContainer[$conname]['write'] = new \PHPKit\DB\Adapter\MySQL($config);
-                        } else {
-                            throw new Exception('数据库连接配置错误');
+                            if (isset($config[$switch]['host'])) {
+                                $config['host'] = $config[$switch]['host'];    
+                            } elseif ($config[$switch] && is_array($config[$switch])) {
+                                $config['host'] = $config[$switch][array_rand($config[$switch])]['host'];
+                            } else {
+                                throw new Exception('数据库连接配置错误');
+                                break;
+                            }
+                            static::$dbContainer[$conname][$switch] = new \PHPKit\DB\Adapter\MySQL($config);
+                            break;
                         }
-                        break;
                     default:
                         throw new Exception('数据库类型不支持');
                 }

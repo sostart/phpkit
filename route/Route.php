@@ -44,37 +44,37 @@ class Route
         }
 
         $uri = '/'.trim($uri, '/');
-        $uri = (rtrim(static::$group.$uri, '/')?:'/');
+        $uri = '/'.trim(static::$group.$uri, '/');
 
         static::$routeGroups[$uri] = [$middleware, $callable];
     }
 
     protected static function expandGroup($fulluri)
     {
-        foreach (static::$routeGroups as $uri=>$arr) {
+        $routeGroups = static::$routeGroups;
+        static::$routeGroups = [];
+        foreach ($routeGroups as $uri=>$arr) {
             if (preg_match('~^'.$uri.'~i', $fulluri)) {
 
                 $middleware = $arr[0];
                 $callable = $arr[1];
 
                 $group = static::$group;
-                static::$group = '/'.trim(static::$group.$uri, '/');
+                static::$group = '/'.trim($uri, '/');
                 
                 $middlewares = static::$middlewares;
                 static::$middlewares = array_merge(static::$middlewares, (array)$middleware);
                 
                 call_user_func($callable);
+                
+                // 在展开时有新增的路由组,则继续展开
+                if (static::$routeGroups) {
+                    static::expandGroup($fulluri);
+                }
 
                 static::$middlewares = $middlewares;
                 static::$group = $group;
             }
-            
-            unset(static::$routeGroups[$uri]);
-        }
-
-        // 在展开时有新增的路由组,继续
-        if (static::$routeGroups) {
-            static::expandGroup($fulluri);
         }
     }
     

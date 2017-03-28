@@ -10,6 +10,12 @@ class Response
     
     protected static $responseType = 'html'; // html => text/html json => application/json
     protected static $response = ['status'=>200, 'message'=>'OK', 'content'=>''];
+    protected static $redirect;
+    
+    protected static function API_redirect($url, $status=302)
+    {
+        static::$redirect = $url;
+    }
 
     protected static function API_status($status=null)
     {
@@ -75,20 +81,24 @@ class Response
 
     public function __toString()
     {
-        if (static::$responseType=='json') {
-            header('Content-type: application/json');
-            $response = json_encode([
-                'status'=>static::$response['status'], 'message'=>static::$response['message'], 'data'=>static::$response['content']
-            ], JSON_UNESCAPED_UNICODE);
-
-            if (isset(static::$response['jsonp_callback'])) {
-                return static::$response['jsonp_callback'].'('.$response.')';
-            } else {
-                return $response;
-            }
+        if (static::$redirect) {
+            header('Location: '.static::$redirect);
         } else {
-            header('HTTP/1.1 '.static::status().' '.static::message());
-            return (string)static::content();
+            if (static::$responseType=='json') {
+                header('Content-type: application/json');
+                $response = json_encode([
+                    'status'=>static::$response['status'], 'message'=>static::$response['message'], 'data'=>static::$response['content']
+                ], JSON_UNESCAPED_UNICODE);
+
+                if (isset(static::$response['jsonp_callback'])) {
+                    return static::$response['jsonp_callback'].'('.$response.')';
+                } else {
+                    return $response;
+                }
+            } else {
+                header('HTTP/1.1 '.static::status().' '.static::message());
+                return (string)static::content();
+            }
         }
     }
 

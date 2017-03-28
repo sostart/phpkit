@@ -88,6 +88,8 @@ class Cache
             } else {
                 return static::set(func_get_arg(0), func_get_arg(1));
             }
+        } elseif ($num == 3) {
+            return static::set(func_get_arg(0), func_get_arg(1), func_get_arg(2));
         }
 
         return $instance;    

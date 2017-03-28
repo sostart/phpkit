@@ -61,6 +61,11 @@ class Input
     public function __invoke()
     {
         $instance = static::getInstance();
-        return $instance;    
+        if ($num = func_num_args()) {
+            if ($num == 1) {
+                return static::get(func_get_arg(0));
+            }
+        }
+        return $instance;
     }
 }

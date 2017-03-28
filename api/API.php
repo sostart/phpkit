@@ -9,6 +9,7 @@ class API
     use LazySingletonTrait, LazyLinkTrait;
     
     protected static $config = [];
+    protected static $response = '';
 
     protected static function API_setConfig($config) {
         if (isset($config['domain'])) {
@@ -47,6 +48,8 @@ class API
             ]
         ]));
 
+        static::$response = $rs;
+
         if (isset(static::$config['callback']) && is_callable(static::$config['callback'])) {
             $rs = call_user_func(static::$config['callback'], $rs, ($callback && is_callable($callback)) ? $callback : false);
         } elseif ($callback && is_callable($callback)) {
@@ -54,6 +57,11 @@ class API
         }
 
         return $rs;
+    }
+
+    public static function response()
+    {
+        return static::$response;
     }
 
     public function __invoke()

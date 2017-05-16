@@ -93,7 +93,7 @@ class Session
     public static function destroy()
     {
         $instance = static::getInstance();
-        return session_destroy();
+        return @session_destroy();
     }
 
     public function __invoke()

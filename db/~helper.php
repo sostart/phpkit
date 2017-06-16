@@ -50,9 +50,9 @@ function delete($table, $where='', $order='', $limit='')
                 $params[] = $v;
             }
         }
-        $where = ' WHERE '.substr($str, 5);
+        $where = substr($str, 5);
     }
-    if (!is_string($where)) $where = '';
+    $where = $where&&is_string($where) ? ' WHERE '.$where : '';
     
     $limit = $limit ? ' LIMIT '.$limit : '';
 
@@ -147,9 +147,9 @@ function update($table, $data, $where='', $limit='')
                 $params[] = $v;
             }
         }
-        $where = ' WHERE '.substr($str, 5);
+        $where = substr($str, 5);
     }
-    if (!is_string($where)) $where = '';
+    $where = $where&&is_string($where) ? ' WHERE '.$where : '';
 
     $limit = $limit ? ' LIMIT '.$limit : '';
 

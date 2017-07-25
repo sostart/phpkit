@@ -82,7 +82,7 @@ class Fetch
         if (count($arr)>1) {
             $returns = [];
             foreach ($arr as $str) {
-                $returns[] = static::parseHeader($str);
+                $returns = array_merge($returns, static::parseHeader($str));
             }
             return $returns;
         } else {

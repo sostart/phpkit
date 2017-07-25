@@ -101,7 +101,7 @@ class Fetch
                 }
             }
 
-            return $headers;
+            return [$headers];
         }
 	}
 

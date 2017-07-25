@@ -26,7 +26,7 @@ if (!function_exists('eachdir')) {
     }
 }
 Helper()->register('eachdir', function ($dir, $callback) {
-    $dir = rtrim($dir, '/\\').'/';
+    $dir = rtrim($dir, '/\\').DIRECTORY_SEPARATOR;
     if (is_dir($dir)) {
         if ($handle = opendir($dir)) {
             while (($file=readdir($handle)) !== false) {

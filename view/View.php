@@ -131,6 +131,11 @@ trait BladeTrait
         return static::$sections[static::$section] = ob_get_clean();
     }
 
+    protected static function API_hasSection($section)
+    {
+        return isset(static::$sections[$section]);
+    }
+
     protected static function API_yield($section)
     {
         return isset(static::$sections[$section])? static::$sections[$section] : '';

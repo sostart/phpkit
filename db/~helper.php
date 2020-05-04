@@ -61,10 +61,23 @@ function delete($table, $where='', $order='', $limit='')
     return DB()->delete($sql, $params);
 }
 
-function find()
+function find($table)
 {
-    $arg = func_get_args(); array_push($arg, 1);
-    return ($return = call_user_func_array('findAll', $arg)) ? $return[0] : $return;
+    $arg = func_get_args();
+    
+    if (isset($arg[1]) && is_string($arg[1]) && ($arg[1]=='*' || preg_match('/^[a-z]([^<>=]|[a-z0-9,`\(\)])+$/', $arg[1]))) {
+        $fields = $arg[1];
+        $where = isset($arg[2]) ? $arg[2] : '';
+        $order = isset($arg[3]) ? $arg[3] : '';
+    } else {
+        $fields = '*';
+        $where = isset($arg[1]) ? $arg[1] : '';
+        $order = isset($arg[2]) ? $arg[2] : '';
+    }
+
+    $limit = 1;
+
+    return ($return = call_user_func_array('findAll', [$table, $fields, $where, $order, $limit])) ? $return[0] : $return;
 }
 
 function findAll($table)

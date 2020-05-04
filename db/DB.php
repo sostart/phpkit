@@ -14,6 +14,8 @@ class DB
     protected static $config = [];
     protected static $dbContainer=[];
 
+    protected static $stm;
+
     protected static function API_setConfig($config)
     {
         static::$conname = $config['default'];
@@ -125,9 +127,10 @@ class DB
         $db = static::getHandle(static::$conname, $switch);
         $pdo = $db->getPDO();
 
-        $stm = $pdo->prepare($sql);        
-        if ($stm->execute($params)) {
-            return $stm->fetchAll();
+        static::$stm = $pdo->prepare($sql);        
+        if (static::$stm->execute($params)) {
+            static::$stm->sql = $sql; static::$stm->params = $params;
+            return static::$stm->fetchAll();
         }
 
         return false;
@@ -142,13 +145,19 @@ class DB
         $db = static::getHandle(static::$conname, $switch);
         $pdo = $db->getPDO();
 
-        $stm = $pdo->prepare($sql);
-        if ($stm->execute($params)) {
+        static::$stm = $pdo->prepare($sql);
+        if (static::$stm->execute($params)) {
             return $pdo->lastInsertId()?:true;
             //return $pdo->lastInsertId()?:$stm->rowCount();
         }
 
         return false;
+    }
+    
+    // 获取最后执行sql信息
+    protected static function API_debug()
+    {
+        return [static::$stm->sql, static::$stm->params];
     }
 
 

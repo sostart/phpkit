@@ -123,7 +123,7 @@ class Fetch
             $headers = [];
             $arr = array_map(function ($row) {
                 return array_map('trim', explode(': ', $row));
-            }, explode("\r\n", $key));
+            }, array_filter(explode("\r\n", $key)));
 
             foreach ($arr as $row) {
                 $headers[$row[0]] = $row[1];

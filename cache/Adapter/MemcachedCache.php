@@ -28,7 +28,7 @@ class MemcachedCache implements \PHPKit\CacheInterface
     {
         $return = $this->handle->get($key);
         if ($return === false) {
-            if (Memcached::getResultCode()===Memcached::RES_NOTFOUND) {
+            if ($this->handle->getResultCode()===Memcached::RES_NOTFOUND) {
                 return $default;
             }
         }

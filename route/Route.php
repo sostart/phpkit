@@ -12,6 +12,9 @@ class Route
     
     protected static $route;
 
+    protected static $uri = '/';
+    protected static $alias = [];
+
     protected static $group = '';
     protected static $middlewares = [];
 
@@ -157,7 +160,12 @@ class Route
             isset($_SERVER['PATH_INFO']) ? ($_SERVER['PATH_INFO']?:'/') :
             ( isset($_SERVER['REQUEST_URI']) ? ((false !== $pos = strpos($_SERVER['REQUEST_URI'], '?')) ? substr($_SERVER['REQUEST_URI'], 0, $pos) : $_SERVER['REQUEST_URI']) : '/')
         );
-        $uri = '/'.trim($uri, '/');
+
+        static::$uri = $uri = '/'.trim($uri, '/');
+        
+        if (isset(static::$alias[static::$uri])) {
+            static::$uri = $uri = static::$alias[static::$uri];
+        }
 
         // 首先解开路由组
         static::expandGroup($uri);
@@ -173,6 +181,14 @@ class Route
         }
 
         return is_callable($dispatcher)?call_user_func($dispatcher, $routeInfo):$routeInfo;
+    }
+
+    public static function getUri() {
+        return static::$uri;
+    }
+
+    protected static function API_alias($original, $alias) {
+        static::$alias[$alias] = $original;
     }
 
     public function __invoke()

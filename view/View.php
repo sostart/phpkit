@@ -35,9 +35,16 @@ class View
 
     protected static function API_share($key, $val=null)
     {
+
         if (is_string($key)) {
+
+            if ($val === null) {
+                return static::$share[$key];
+            }
+            
             $key = [$key=>$val];
         }
+
         foreach ($key as $k=>$v) {
             static::$share[$k] = $v;
         }

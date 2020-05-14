@@ -68,7 +68,7 @@ if (!function_exists('path')) {
 Helper()->register('path', function () {
     if (!func_num_args()) {
         return '/'.trim(rawurldecode( 
-            isset($_SERVER['PATH_INFO']) ? ($_SERVER['PATH_INFO']?:'/') :
+            isset($_SERVER['PATH_INFO'])&&$_SERVER['PATH_INFO'] ? ($_SERVER['PATH_INFO']?:'/') :
             ( (false !== $pos = strpos($_SERVER['REQUEST_URI'], '?')) ? substr($_SERVER['REQUEST_URI'], 0, $pos) : $_SERVER['REQUEST_URI'])
         ), '/');
     } else {

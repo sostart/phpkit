@@ -79,6 +79,7 @@ class Route
                 static::$group = $group;
             }
         }
+        static::$routeGroups = $routeGroups;
     }
     
     protected static function API_any($uri, $middleware, $callable=null)

@@ -163,7 +163,7 @@ namespace PHPKit
         return false;
     }
 
-    function find($table, $where, $order='', $limit=1)
+    function find($table, $where='', $order='', $limit=1)
     {
         $phpkit = PHPKit::getInstance();
 
@@ -182,10 +182,11 @@ namespace PHPKit
                     }
                 }
                 $where = ' WHERE '.substr($str, 5);      
+            } else if (is_numeric($where) && ceil($where)==$where ) {
+                $where = ' WHERE `id`='.$where;
             } else if (is_string($where)) {
                 $where = ' WHERE '.$where;
             }
-            
         } else {
             $where = '';
         }
@@ -273,8 +274,10 @@ namespace PHPKit
                 $str .= " AND `$k`=?";
                 $arr[] = $v;
             }
-            $where = ' WHERE '.substr($str, 5);
+            $where = substr($str, 5);
         }
+
+        $where = ' WHERE '.$where;
 
         $sql = 'DELETE FROM `'.$prefix.$table.'`'.$where;
         
@@ -1603,7 +1606,7 @@ namespace
      */
     if (!function_exists('redirect')) {
         function redirect($url, $params=[]) {
-            return Response()->redirect(url($url, $params));
+            return Response()->redirect(restfuluri($url, $params));
         }
     }
 
